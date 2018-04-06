@@ -6,18 +6,13 @@
       //____________________________________
 
       var dataPrototype = {
-            // send data to DATA module
-            pushData: function(data) {
-                _dt.information = data;
-                console.log(_dt.information.current_observation);
-            }
 
       }
 
       var _dt = Object.create(dataPrototype);
-          _dt.Location = '';
+          _dt.Location = {};
           _dt.apiKey = '99dfe35fcb7de1ee';
-          _dt.information = ''
+          _dt.information = {}
       return _dt;
   }());
 
@@ -25,33 +20,53 @@
 //UI MODULE
   var _ui = (function() {        
       //=>closure___________________________
-      
+      var id$ = function(id){return document.getElementById(id)}
+      var id$txt = function(id, text){return document.getElementById(id).textContent = text}
       //____________________________________
       
     var uiPrototype = {
-      // return an object with de values from inputs
-        getInputs: function() {
-          return {
-            city: document.getElementById(this.Dom.city).value,
-            state: document.getElementById(this.Dom.state).value
-          }
-        },
-      //clear the inputs values 
-        clearInputs: function() {
-          document.getElementById(this.Dom.city).value = '';
-          document.getElementById(this.Dom.state).value = '';
+        // return an object with de values from inputs
+          getInputs: function() {
+            return {
+              city: document.getElementById(this.Dom.city).value,
+              state: document.getElementById(this.Dom.state).value
+            }
+          },
+        //clear the inputs values 
+          clearInputs: function() {
+            document.getElementById(this.Dom.city).value = '';
+            document.getElementById(this.Dom.state).value = '';
+          },
+
+        // shows information on the Dom
+        paintDom: function(weather) {
+          id$(this.Dom.icon).setAttribute('src', weather.icon_url);
+          id$txt(this.Dom.location, weather.display_location.full);
+          id$txt(this.Dom.desc,  weather.weather);
+          id$txt(this.Dom.string,  weather.temperature_string);
+          id$txt(this.Dom.humidity,`Relative Humidity: ${weather.relative_humidity}`);
+          id$txt(this.Dom.fewsLike,`Feels Like: ${weather.feelslike_string}`);
+          id$txt(this.Dom.dewpoint, `DewPoint: ${weather.dewpoint_string}`);
+          id$txt(this.Dom.wind, `Wind: ${weather.wind_string}`);
+     
         }
     }
 
     var _ui = Object.create(uiPrototype);
         _ui.Dom = {//-> Dom strings
+          location: 'w-location',
           humidity: 'w-humidity',
           dewpoint: 'w-dewpoint',
           fewsLike: 'w-feels-like',
           wind: 'w-wind',
+          icon: 'w-icon',
+          details: 'w-details',
+          string: 'w-string',
+          desc: 'w-desc',
           city: 'city',
           state: 'state',
-          btn: 'w-change-btn'
+          btn: 'w-change-btn',
+          locModal: 'locModal'
         }
 
     return _ui;
@@ -69,6 +84,7 @@
          _dt.Location = _ui.getInputs();
          _ui.clearInputs();
           http(_dt.Location);
+        
       }
       
       //create url 
@@ -82,8 +98,15 @@
       function getApi(url) {
           //method from fetch framework
           _http.get(url)
-          .then(data => _dt.pushData(data))//-> send data from DATA module
+          .then(data => pushData(data.current_observation))//-> send data from DATA module
           .catch(err => console.log(err));
+      }
+
+    // send data to DATA module
+      function  pushData(data) {
+            _dt.information = data;
+            _ui.paintDom(_dt.information);
+            console.log(_dt.information);
       }
 
  
@@ -102,8 +125,8 @@
   }(_dt, _ui));
 
 
-  console.log(app);
-  console.log(_dt);
-  console.log(_ui);
+  // console.log(app);
+  // console.log(_dt);
+  // console.log(_ui);
 }(window));
 
