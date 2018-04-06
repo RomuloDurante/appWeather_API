@@ -82,15 +82,22 @@
       //get inputs value and sendo to Data module
       function getInputs() {
          _dt.Location = _ui.getInputs();
+
+         //set the valuos to the localStorage
+         localStorage.clear();
+         localStorage.setItem('Location', JSON.stringify(_dt.Location));
+
+         //clear inputs after get the elements
          _ui.clearInputs();
+
+         //call the function http
           http(_dt.Location);
         
       }
       
       //create url 
       function http(location) {
-        url = `//api.wunderground.com/api/${_dt.apiKey}/conditions/q/${_dt.Location.state}/${_dt.Location.city}.json`
-        console.log(url);
+        url = `//api.wunderground.com/api/${_dt.apiKey}/conditions/q/${location.state}/${location.city}.json`
         getApi(url);
 
       }
@@ -106,7 +113,14 @@
       function  pushData(data) {
             _dt.information = data;
             _ui.paintDom(_dt.information);
-            console.log(_dt.information);
+      }
+
+      //load page
+      function loadLocalStorage(){
+        //get the location from localStorage
+        var Location = JSON.parse(localStorage.getItem('Location'));
+        //call the http function
+        http(Location);
       }
 
  
@@ -114,7 +128,13 @@
 
       var appSetup = {
           setupEvents: function() {
+            //event with btn
             document.getElementById(_ui.Dom.btn).addEventListener('click', getInputs);
+
+            //event with window
+            document.addEventListener('DOMContentLoaded', loadLocalStorage);
+            
+
           }
     }
 
