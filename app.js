@@ -1,20 +1,28 @@
 (function(global) {
-
+//DATA MODULE 
   var _dt = (function() {        
       //=>closure___________________________
       
       //____________________________________
 
       var dataPrototype = {
-          
+            // send data to DATA module
+            pushData: function(data) {
+                _dt.information = data;
+                console.log(_dt.information.current_observation);
+            }
+
       }
 
       var _dt = Object.create(dataPrototype);
-          _dt.Location = {};
+          _dt.Location = '';
+          _dt.apiKey = '99dfe35fcb7de1ee';
+          _dt.information = ''
       return _dt;
   }());
 
 /*********************************************** */
+//UI MODULE
   var _ui = (function() {        
       //=>closure___________________________
       
@@ -51,14 +59,34 @@
   }());
 
 /************************************************** */
+//APP MODULE -> this is the only object expose to the global environment
   global.app = (function(_dt, _ui) {
      //=>closure___________________________
+       var url = '';
+
       //get inputs value and sendo to Data module
       function getInputs() {
          _dt.Location = _ui.getInputs();
-         console.log(_dt);
-        _ui.clearInputs();
+         _ui.clearInputs();
+          http(_dt.Location);
       }
+      
+      //create url 
+      function http(location) {
+        url = `//api.wunderground.com/api/${_dt.apiKey}/conditions/q/${_dt.Location.state}/${_dt.Location.city}.json`
+        console.log(url);
+        getApi(url);
+
+      }
+
+      function getApi(url) {
+          //method from fetch framework
+          _http.get(url)
+          .then(data => _dt.pushData(data))//-> send data from DATA module
+          .catch(err => console.log(err));
+      }
+
+ 
      //____________________________________
 
       var appSetup = {
