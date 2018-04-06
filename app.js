@@ -6,7 +6,11 @@
       //____________________________________
 
       var dataPrototype = {
-
+        //clear database
+        clearData: function() {
+          this.Location = {},
+          this.information = {}
+        }
       }
 
       var _dt = Object.create(dataPrototype);
@@ -81,6 +85,7 @@
 
       //get inputs value and sendo to Data module
       function getInputs() {
+         _dt.clearData();
          _dt.Location = _ui.getInputs();
 
          //set the valuos to the localStorage
