@@ -5,7 +5,7 @@ It was made using OOP and pure prototypal inheritance and my 'fetch' framework.
 
 I'm use the API from wunderground.com 
 
-:sunny: :umbrella: snowman: :cloud:
+:sunny: :umbrella: :cloud: :snowman:
 ___
 
 ![App](img/empty.png)
