@@ -151,5 +151,5 @@
 
 
 
-}(this));
+}((function(){try {return window} catch(err){return global}})()));
 
