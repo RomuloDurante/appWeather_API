@@ -150,8 +150,6 @@
   }(_dt, _ui));
 
 
-  // console.log(app);
-  // console.log(_dt);
-  // console.log(_ui);
-}(window));
+  // if window object exists return window parameter else return global object to NodeJS
+}( function(window){if(typeof window === "object"){return window} else{return global}} ));
 
